@@ -62,7 +62,7 @@ mood-journal/
 Development Setup:->
 1) Install a local server (recommended for development):npm install -g live-server
 2) start the development server:live-server
-3) the app will automatically open in your default browser at:http://localhost:8080
+3) the app will automatically open in your default browser
 Deployment:->
 1) Push your code to the main branch of your GitHub repository
 2) Go to Repository Settings > Pages
