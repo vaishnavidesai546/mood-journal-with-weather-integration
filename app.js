@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // DOM Elements
     const currentDateEl = document.getElementById('current-date');
     const moodButtons = document.querySelectorAll('.mood-btn');
     const saveButton = document.getElementById('save-entry');
@@ -9,19 +8,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevMonthBtn = document.getElementById('prev-month');
     const nextMonthBtn = document.getElementById('next-month');
     
-    // State
     let selectedMood = null;
     let currentDate = new Date();
     let viewingDate = new Date(); // For calendar navigation
     
-    // Initialize
     updateCurrentDate();
     setupMoodButtons();
     setupSaveButton();
     generateCalendar();
     setupCalendarNavigation();
     
-    // Functions
     function updateCurrentDate() {
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         currentDateEl.textContent = currentDate.toLocaleDateString(undefined, options);
@@ -30,14 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupMoodButtons() {
         moodButtons.forEach(button => {
             button.addEventListener('click', function() {
-                // Remove selected class from all buttons
                 moodButtons.forEach(btn => btn.classList.remove('selected'));
                 
-                // Add selected class to clicked button
                 this.classList.add('selected');
                 selectedMood = this.dataset.mood;
                 
-                // Change theme based on mood
+        
                 document.body.className = '';
                 document.body.classList.add(`${selectedMood}-theme`);
             });
@@ -55,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 date: currentDate.toISOString(),
                 mood: selectedMood,
                 notes: notesInput.value,
-                weather: getCurrentWeather() // This will come from weather.js
+                weather: getCurrentWeather() 
             };
             
             saveEntry(entry);
@@ -77,22 +71,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const year = viewingDate.getFullYear();
         const month = viewingDate.getMonth();
-        
-        // Update month display
+    
         currentMonthEl.textContent = viewingDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-        
-        // Get first day of month and total days in month
+    
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         
-        // Add empty cells for days before the first day of the month
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement('div');
             emptyCell.classList.add('calendar-day');
             calendarGrid.appendChild(emptyCell);
         }
         
-        // Add cells for each day of the month
         for (let day = 1; day <= daysInMonth; day++) {
             const dayCell = document.createElement('div');
             dayCell.classList.add('calendar-day');
@@ -105,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 dayCell.classList.add('has-entry');
                 dayCell.style.setProperty('--mood-color', getMoodColor(entries[0].mood));
                 
-                // Add tooltip with mood and weather
                 dayCell.title = `Mood: ${entries[0].mood}\nWeather: ${entries[0].weather}`;
             }
             
@@ -135,12 +124,10 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         return colors[mood] || '#ffffff';
     }
-    // Mood Trends Chart
 function renderMoodChart(period = 'week') {
     const entries = getAllEntries();
     if (entries.length === 0) return;
-    
-    // Group entries by period
+
     const moodCounts = {};
     const moodOrder = ['happy', 'excited', 'calm', 'sad', 'angry'];
     
@@ -170,7 +157,6 @@ function renderMoodChart(period = 'week') {
         moodCounts[key].total++;
     });
     
-    // Prepare data for chart
     const labels = Object.keys(moodCounts).sort();
     const datasets = moodOrder.map(mood => {
         return {
@@ -180,10 +166,10 @@ function renderMoodChart(period = 'week') {
                 return total > 0 ? (moodCounts[label][mood] / total) * 100 : 0;
             }),
             backgroundColor: getMoodColor(mood)
-        };
+    2    };
     });
     
-    // Get or create chart
+
     const ctx = document.getElementById('mood-chart').getContext('2d');
     
     if (window.moodChart) {
@@ -222,12 +208,8 @@ function getWeekNumber(date) {
     const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 }
-
-// Initialize chart
 document.getElementById('trends-period').addEventListener('change', function() {
     renderMoodChart(this.value);
 });
-
-// Call this after saving an entry or when the page loads
 renderMoodChart();
 })
