@@ -135,4 +135,99 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         return colors[mood] || '#ffffff';
     }
+    // Mood Trends Chart
+function renderMoodChart(period = 'week') {
+    const entries = getAllEntries();
+    if (entries.length === 0) return;
+    
+    // Group entries by period
+    const moodCounts = {};
+    const moodOrder = ['happy', 'excited', 'calm', 'sad', 'angry'];
+    
+    entries.forEach(entry => {
+        const date = new Date(entry.date);
+        let key;
+        
+        if (period === 'week') {
+            const weekNum = getWeekNumber(date);
+            key = `${date.getFullYear()}-W${weekNum}`;
+        } else {
+            key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+        }
+        
+        if (!moodCounts[key]) {
+            moodCounts[key] = {
+                happy: 0,
+                sad: 0,
+                angry: 0,
+                calm: 0,
+                excited: 0,
+                total: 0
+            };
+        }
+        
+        moodCounts[key][entry.mood]++;
+        moodCounts[key].total++;
+    });
+    
+    // Prepare data for chart
+    const labels = Object.keys(moodCounts).sort();
+    const datasets = moodOrder.map(mood => {
+        return {
+            label: mood,
+            data: labels.map(label => {
+                const total = moodCounts[label].total;
+                return total > 0 ? (moodCounts[label][mood] / total) * 100 : 0;
+            }),
+            backgroundColor: getMoodColor(mood)
+        };
+    });
+    
+    // Get or create chart
+    const ctx = document.getElementById('mood-chart').getContext('2d');
+    
+    if (window.moodChart) {
+        window.moodChart.data.labels = labels;
+        window.moodChart.data.datasets = datasets;
+        window.moodChart.update();
+    } else {
+        window.moodChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Percentage'
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+function getWeekNumber(date) {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
+// Initialize chart
+document.getElementById('trends-period').addEventListener('change', function() {
+    renderMoodChart(this.value);
+});
+
+// Call this after saving an entry or when the page loads
+renderMoodChart();
 })
