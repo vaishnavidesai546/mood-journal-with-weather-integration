@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Journal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mood Journal</h1>
+            <div class="date-weather">
+                <div id="current-date"></div>
+                <div id="weather-display"></div>
+            </div>
+        </header>
+
+        <main>
+            <section class="mood-entry">
+                <h2>How are you feeling today?</h2>
+                <div class="mood-options">
+                    <button class="mood-btn" data-mood="happy">😊 Happy</button>
+                    <button class="mood-btn" data-mood="sad">😢 Sad</button>
+                    <button class="mood-btn" data-mood="angry">😠 Angry</button>
+                    <button class="mood-btn" data-mood="calm">😌 Calm</button>
+                    <button class="mood-btn" data-mood="excited">🤩 Excited</button>
+                </div>
+
+                <div class="notes-section">
+                    <label for="daily-notes">Today's notes:</label>
+                    <textarea id="daily-notes" placeholder="Write something about your day..."></textarea>
+                </div>
+
+                <button id="save-entry" class="save-btn">Save Entry</button>
+            </section>
+
+            <section class="calendar-view">
+                <h2>Your Mood History</h2>
+                <div class="calendar-controls">
+                    <button id="prev-month">◀</button>
+                    <h3 id="current-month">April 2023</h3>
+                    <button id="next-month">▶</button>
+                </div>
+                <div id="calendar-grid" class="calendar-grid"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/storage.js"></script>
+</body>
+</html>
